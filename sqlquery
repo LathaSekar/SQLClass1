@@ -1,0 +1,35 @@
+-- Create new database
+CREATE DATABASE shopping_db;
+
+-- Select database
+USE shopping_db;
+
+-- Create customers table
+CREATE TABLE customers (
+    customer_id   INT PRIMARY KEY AUTO_INCREMENT,
+    customer_name VARCHAR(100) NOT NULL,
+    email         VARCHAR(100) UNIQUE,
+    phone         VARCHAR(15),
+    city          VARCHAR(50)
+);
+
+-- Create products table
+CREATE TABLE products (
+    product_id    INT PRIMARY KEY AUTO_INCREMENT,
+    product_name  VARCHAR(100) NOT NULL,
+    category      VARCHAR(50),
+    price         DECIMAL(10,2),
+    stock_qty     INT
+);
+
+-- Create orders table
+CREATE TABLE orders (
+    order_id      INT PRIMARY KEY AUTO_INCREMENT,
+    customer_id   INT,
+    product_id    INT,
+    quantity      INT,
+    order_date    DATE,
+    status        VARCHAR(20),
+    FOREIGN KEY (customer_id) REFERENCES customers(customer_id),
+    FOREIGN KEY (product_id)  REFERENCES products(product_id)
+);
