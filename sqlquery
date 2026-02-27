@@ -95,8 +95,6 @@ VALUES
 ---
 
 🔵 STEP 4 — DML Practice (SELECT)
-
-```sql
 -- Get all customers
 SELECT * FROM customers;
 
