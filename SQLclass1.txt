@@ -1,0 +1,170 @@
+🔹 Introduction to SQL
+SQL (Structured Query Language) is a standard language used to communicate with databases.
+It is used to:
+Store data
+Retrieve data
+Update data
+Delete data
+Manage database structure
+SQL works with Relational Database Management Systems (RDBMS) like:
+Oracle Database
+MySQL
+Microsoft SQL Server
+
+What is a Database?
+A Database is an organized collection of related data.
+Example:
+Student database
+Employee database
+Hospital database
+It stores data in tables (rows and columns).
+
+SELECT Statement
+Used to retrieve data from a table.
+Basic Syntax:
+SELECT column_name FROM table_name;
+
+🔹 Select All Columns
+SELECT * FROM students;
+
+🔹 Select Specific Columns
+SELECT name, age FROM students;
+
+Types of SQL Languages
+SQL is divided into 5 categories:
+1️⃣ Data Definition Language (DDL)
+Used to define database structure.
+Commands:
+CREATE
+ALTER
+DROP
+TRUNCATE
+Example:
+CREATE — Create a table
+CREATE TABLE employees (
+    emp_id      INT PRIMARY KEY AUTO_INCREMENT,
+    emp_name    VARCHAR(100) NOT NULL,
+    department  VARCHAR(50),
+    salary      DECIMAL(10,2),
+    hire_date   DATE
+);
+ALTER — Add / Modify / Drop a column
+-- Add a new column
+ALTER TABLE employees ADD email VARCHAR(100);
+
+-- Modify column datatype
+ALTER TABLE employees MODIFY salary DECIMAL(12,2);
+
+-- Rename a column
+ALTER TABLE employees RENAME COLUMN email TO work_email;
+
+-- Drop a column
+ALTER TABLE employees DROP COLUMN work_email;
+
+TRUNCATE — Delete all rows but keep table structure
+TRUNCATE TABLE employees;
+
+DROP — Delete the entire table permanently
+DROP TABLE employees;
+
+2️⃣ Data Manipulation Language (DML)
+Used to manipulate data inside tables.
+Commands:
+INSERT
+UPDATE
+DELETE
+SELECT
+Example:
+INSERT INTO students VALUES (1, 'Ravi', 20);
+First recreate the table to practice DML
+CREATE TABLE employees (
+    emp_id      INT PRIMARY KEY AUTO_INCREMENT,
+    emp_name    VARCHAR(100) NOT NULL,
+    department  VARCHAR(50),
+    salary      DECIMAL(10,2),
+    hire_date   DATE
+);
+INSERT — Add records
+-- Insert single row
+INSERT INTO employees (emp_name, department, salary, hire_date)
+VALUES ('Chermalatha', 'QA Automation', 85000.00, '2021-07-01');
+
+-- Insert multiple rows
+INSERT INTO employees (emp_name, department, salary, hire_date)
+VALUES 
+    ('Anitha',   'Development',  90000.00, '2020-03-15'),
+    ('Ramesh',   'DevOps',       95000.00, '2019-06-10'),
+    ('Priya',    'QA Manual',    70000.00, '2022-01-20'),
+    ('Karthik',  'Development',  88000.00, '2021-09-05');
+SELECT — Read / Retrieve records
+-- Get all records
+SELECT * FROM employees;
+
+-- Get specific columns
+SELECT emp_name, department, salary FROM employees;
+
+-- Filter with WHERE
+SELECT * FROM employees WHERE department = 'QA Automation';
+
+-- Filter with multiple conditions
+SELECT * FROM employees 
+WHERE salary > 80000 AND department = 'Development';
+
+-- Sort results
+SELECT * FROM employees ORDER BY salary DESC;
+
+-- Limit results
+SELECT * FROM employees ORDER BY salary DESC LIMIT 3;
+UPDATE — Modify existing records
+sql-- Update single record
+UPDATE employees 
+SET salary = 90000.00 
+WHERE emp_name = 'Chermalatha';
+
+-- Update multiple columns
+UPDATE employees 
+SET salary = 95000.00, department = 'Senior QA'
+WHERE emp_id = 1;
+
+-- Update all rows in a column
+UPDATE employees 
+SET salary = salary * 1.10;  -- 10% salary hike for everyone
+
+DELETE — Remove records
+-- Delete specific record
+DELETE FROM employees WHERE emp_id = 5;
+
+-- Delete with condition
+DELETE FROM employees WHERE department = 'QA Manual';
+
+-- Delete all rows (keeps table structure unlike DROP)
+DELETE FROM employees;
+
+
+3️⃣ Data Control Language (DCL)
+Used to control user permissions.
+Commands:
+GRANT
+REVOKE
+Example:
+GRANT SELECT ON students TO user1;
+
+4️⃣ Transaction Control Language (TCL)
+Used to manage transactions.
+Commands:
+COMMIT
+ROLLBACK
+SAVEPOINT
+Example:
+SAVEPOINT A;
+ROLLBACK TO A;
+COMMIT;
+
+Courses table
+
+| Type | Purpose      | Commands                       |
+| ---- | ------------ | ------------------------------ |
+| DDL  | Structure    | CREATE, ALTER, DROP, TRUNCATE  |
+| DML  | Data         | INSERT, UPDATE, DELETE, SELECT |
+| DCL  | Permission   | GRANT, REVOKE                  |
+| TCL  | Transactions | COMMIT, ROLLBACK, SAVEPOINT    |
