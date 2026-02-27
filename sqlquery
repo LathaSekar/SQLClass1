@@ -74,3 +74,60 @@ FLUSH PRIVILEGES;
 -- STEP 8: Cleanup users
 DROP USER 'shopmanager'@'localhost';
 DROP USER 'shopreporter'@'localhost';
+
+-- Turn off autocommit
+SET autocommit = 0;
+
+-- ✅ COMMIT Example
+START TRANSACTION;
+
+INSERT INTO customers (customer_name, email, phone, location)
+VALUES ('Deepa', 'deepa@gmail.com', '9111222333', 'Coimbatore');
+
+UPDATE products 
+SET stock_qty = stock_qty - 1 
+WHERE product_name = 'Dell Laptop';
+
+-- Save permanently
+COMMIT;
+
+-- Verify
+SELECT * FROM customers;
+SELECT product_name, stock_qty FROM products;
+
+-- ❌ ROLLBACK Example
+START TRANSACTION;
+
+DELETE FROM orders WHERE order_id = 1;
+
+UPDATE products SET price = 0 WHERE product_id = 1;
+
+-- Oops! Undo everything
+ROLLBACK;
+
+-- Verify nothing changed
+SELECT * FROM orders;
+SELECT * FROM products;
+
+-- 🔖 SAVEPOINT Example
+START TRANSACTION;
+
+-- Step 1 : Add new customer
+INSERT INTO customers (customer_name, email, phone, location)
+VALUES ('Kavya', 'kavya@gmail.com', '9222333444', 'Chennai');
+
+-- Save checkpoint here
+SAVEPOINT after_new_customer;
+
+-- Step 2 : Accidentally delete all orders
+DELETE FROM orders;
+
+-- Oops! Rollback only Step 2
+ROLLBACK TO SAVEPOINT after_new_customer;
+
+-- Save Step 1 permanently
+COMMIT;
+
+-- Verify Kavya added but orders intact
+SELECT * FROM customers;
+SELECT * FROM orders;
