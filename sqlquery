@@ -33,3 +33,44 @@ CREATE TABLE orders (
     FOREIGN KEY (customer_id) REFERENCES customers(customer_id),
     FOREIGN KEY (product_id)  REFERENCES products(product_id)
 );
+
+-- STEP 1: Create two new users
+CREATE USER 'shopmanager'@'localhost' IDENTIFIED BY 'Shop@1234';
+CREATE USER 'shopreporter'@'localhost' IDENTIFIED BY 'Report@1234';
+
+-- STEP 2: Grant shopmanager full access
+GRANT SELECT, INSERT, UPDATE, DELETE 
+ON shopping_db.* 
+TO 'shopmanager'@'localhost';
+
+-- STEP 3: Grant shopreporter read-only access
+GRANT SELECT 
+ON shopping_db.* 
+TO 'shopreporter'@'localhost';
+
+FLUSH PRIVILEGES;
+
+-- STEP 4: Check permissions of both users
+SHOW GRANTS FOR 'shopmanager'@'localhost';
+SHOW GRANTS FOR 'shopreporter'@'localhost';
+
+-- STEP 5: Revoke DELETE from shopmanager
+REVOKE DELETE 
+ON shopping_db.* 
+FROM 'shopmanager'@'localhost';
+
+FLUSH PRIVILEGES;
+
+-- STEP 6: Verify revoke worked
+SHOW GRANTS FOR 'shopmanager'@'localhost';
+
+-- STEP 7: Revoke all from shopreporter
+REVOKE ALL PRIVILEGES 
+ON shopping_db.* 
+FROM 'shopreporter'@'localhost';
+
+FLUSH PRIVILEGES;
+
+-- STEP 8: Cleanup users
+DROP USER 'shopmanager'@'localhost';
+DROP USER 'shopreporter'@'localhost';
