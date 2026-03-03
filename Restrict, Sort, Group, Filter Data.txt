@@ -1,0 +1,35 @@
+CREATE TABLE employees (
+    emp_id      INT,
+    emp_name    VARCHAR(50),
+    department  VARCHAR(30),
+    salary      DECIMAL(10,2),
+    age         INT,
+    city        VARCHAR(30),
+    hire_date   DATE,
+    is_active   BOOLEAN
+);
+
+INSERT INTO employees VALUES
+(1,  'Alice',   'IT',        75000, 28, 'New York',    '2020-01-15', true),
+(2,  'Bob',     'HR',        45000, 35, 'Chicago',     '2018-03-22', true),
+(3,  'Charlie', 'IT',        90000, 40, 'New York',    '2015-07-10', true),
+(4,  'Diana',   'Finance',   60000, 32, 'Houston',     '2019-11-05', false),
+(5,  'Eve',     'IT',        82000, 27, 'New York',    '2021-06-20', true),
+(6,  'Frank',   'HR',        48000, 45, 'Chicago',     '2017-09-14', true),
+(7,  'Grace',   'Finance',   71000, 38, 'Houston',     '2016-04-30', true),
+(8,  'Henry',   'Marketing', 55000, 29, 'Los Angeles', '2022-02-18', false),
+(9,  'Isla',    'Marketing', 62000, 31, 'Los Angeles', '2020-08-25', true),
+(10, 'Jack',    'Finance',   85000, 44, 'Houston',     '2014-12-01', true);
+
+WHERE Clause — Restricting Data
+Filters rows before any grouping or aggregation.
+-- Get all IT employees
+SELECT * FROM employees
+WHERE department = 'IT';
+
+-- Result:
+-- Alice | IT | 75000
+-- Charlie | IT | 90000
+-- Eve | IT | 82000
+
+WHERE with Numbers
