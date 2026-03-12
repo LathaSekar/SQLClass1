@@ -269,3 +269,66 @@ CREATE TABLE employees (
     REFERENCES departments(dept_id)
     ON DELETE SET DEFAULT
 );
+
+UNIQUE Constraint:
+A UNIQUE constraint ensures that all values in a column are different. No duplicate values are allowed.
+CREATE TABLE employees (
+    emp_id INT,
+    email VARCHAR(100) UNIQUE
+);
+INSERT INTO employees VALUES (1,'a@gmail.com');
+INSERT INTO employees VALUES (2,'b@gmail.com');
+INSERT INTO employees VALUES (3,'b@gmail.com');
+
+NOT NULL Constraint:
+NOT NULL ensures that a column cannot contain NULL values.
+CREATE TABLE students (
+    student_id INT,
+    name VARCHAR(50) NOT NULL
+);
+INSERT INTO students(student_id) VALUES (2); --Error
+CHECK Constraint:
+CHECK constraint ensures that values in a column meet a specific condition.
+CREATE TABLE products (
+    product_id INT,
+    price INT CHECK (price > 0)
+);
+INSERT INTO products VALUES (1,500);
+INSERT INTO products VALUES (2,-100);  --Error
+
+DEFAULT Constraint:
+DEFAULT constraint assigns a default value if no value is provided during insertion.
+CREATE TABLE orders (
+    order_id INT,
+    status VARCHAR(20) DEFAULT 'Pending'
+);
+INSERT INTO orders(order_id) VALUES (101);
+
+Guidelines to ADD Constraints:
+Add UNIQUE Constraint:
+ALTER TABLE employees
+ADD CONSTRAINT unique_email UNIQUE(email);
+
+Add NOT NULL Constraint:
+ALTER TABLE students
+MODIFY name VARCHAR(50) NOT NULL;
+
+Guidelines to REMOVE Constraints:
+Remove UNIQUE Constraint:
+ALTER TABLE employees
+DROP INDEX unique_email;
+
+Remove NOT NULL Constraint:
+ALTER TABLE students
+MODIFY name VARCHAR(50) NULL;
+
+ALTER TABLE orders
+ALTER status DROP DEFAULT;
+
+Guidelines to ALTER Constraints:
+Change CHECK condition
+ALTER TABLE products
+DROP CHECK chk_price;
+
+ALTER TABLE products
+ADD CONSTRAINT chk_price CHECK(price > 100);
