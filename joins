@@ -1,0 +1,187 @@
+SQL Joins are used to retrieve data from multiple tables based on a related column.
+INNER JOIN:
+Returns only matching rows from both tables.
+customers
+| customer_id | name  |
+| ----------- | ----- |
+| 1           | Rahul |
+| 2           | Anita |
+| 3           | John  |
+Orders
+| order_id | customer_id |
+| -------- | ----------- |
+| 101      | 1           |
+| 102      | 2           |
+| 103      | 4           |
+
+SELECT customers.name, orders.order_id
+FROM customers
+INNER JOIN orders
+ON customers.customer_id = orders.customer_id;
+output:
+| name  | order_id |
+| ----- | -------- |
+| Rahul | 101      |
+| Anita | 102      |
+OUTER JOIN:
+Outer joins return matching rows + non-matching rows.
+LEFT OUTER JOIN:
+Returns all rows from left table + matching rows from right table.
+SELECT customers.name, orders.order_id
+FROM customers
+LEFT JOIN orders
+ON customers.customer_id = orders.customer_id;
+Output:
+| name  | order_id |
+| ----- | -------- |
+| Rahul | 101      |
+| Anita | 102      |
+| John  | NULL     |
+RIGHT OUTER JOIN:
+Returns all rows from right table + matching rows from left table.
+SELECT customers.name, orders.order_id
+FROM customers
+RIGHT JOIN orders
+ON customers.customer_id = orders.customer_id;
+| name  | order_id |
+| ----- | -------- |
+| Rahul | 101      |
+| Anita | 102      |
+| NULL  | 103      |
+SELF JOIN:
+A table joined with itself
+Employees:
+| emp_id | name | manager_id |
+| ------ | ---- | ---------- |
+| 1      | John | NULL       |
+| 2      | Sam  | 1          |
+| 3      | Rita | 1          |
+SELECT e1.name AS employee, e2.name AS manager
+FROM employees e1
+LEFT JOIN employees e2
+ON e1.manager_id = e2.emp_id;
+Output:
+| employee | manager |
+| -------- | ------- |
+| John     | NULL    |
+| Sam      | John    |
+| Rita     | John    |
+SEMI JOIN:
+A Semi Join returns rows from the first table where at least one matching row exists in the second table.
+They are usually implemented using EXISTS / NOT EXISTS / IN / NOT IN.
+It only checks existence, not duplicates.
+Customers
+| customer_id | name  |
+| ----------- | ----- |
+| 1           | Rahul |
+| 2           | Anita |
+| 3           | John  |
+| 4           | Meena |
+Orders
+| order_id | customer_id |
+| -------- | ----------- |
+| 101      | 1           |
+| 102      | 2           |
+| 103      | 1           |
+SELECT name
+FROM customers c
+WHERE EXISTS (
+    SELECT 1
+    FROM orders o
+    WHERE o.customer_id = c.customer_id
+);
+SELECT name
+FROM customers
+WHERE customer_id IN (
+    SELECT customer_id FROM orders
+);
+Output:
+| name  |
+| ----- |
+| Rahul |
+| Anita |
+ANTI JOIN:
+An Anti Join returns rows from the first table that do NOT have matching rows in the second table.
+SELECT name
+FROM customers c
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM orders o
+    WHERE o.customer_id = c.customer_id
+);
+SELECT name
+FROM customers
+WHERE customer_id NOT IN (
+    SELECT customer_id FROM orders
+);
+output:
+| name  |
+| ----- |
+| John  |
+| Meena |
+
+SET OPERATORS:
+student A
+| student_id | name  |
+| ---------- | ----- |
+| 1          | Rahul |
+| 2          | Anita |
+| 3          | John  |
+student B
+| student_id | name  |
+| ---------- | ----- |
+| 3          | John  |
+| 4          | Meena |
+| 5          | David |
+
+UNION:
+Combines results and removes duplicates.
+SELECT name FROM Students_A
+UNION
+SELECT name FROM Students_B;
+Output:
+| name  |
+| ----- |
+| Rahul |
+| Anita |
+| John  |
+| Meena |
+| David |
+
+UNION ALL:
+Combines results including duplicates.
+SELECT name FROM Students_A
+UNION ALL
+SELECT name FROM Students_B;
+Output:
+| name  |
+| ----- |
+| Rahul |
+| Anita |
+| John  |
+| John  |
+| Meena |
+| David |
+
+
+INTERSECT
+Returns common rows from both queries.
+SELECT name FROM Students_A
+INTERSECT
+SELECT name FROM Students_B;
+output:
+| name |
+| ---- |
+| John |
+
+MINUS :
+Returns rows present in first query but not in second query.
+SELECT name FROM Students_A
+MINUS
+SELECT name FROM Students_B;
+output:
+| name  |
+| ----- |
+| Rahul |
+| Anita |
+
