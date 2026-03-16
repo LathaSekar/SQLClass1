@@ -1,0 +1,465 @@
+ 1. NULL Related Functions
+
+These functions help handle **NULL values** in Oracle.
+
+1. COALESCE
+
+Returns the first non-NULL value in a list.
+
+```sql
+SELECT COALESCE(NULL, NULL, 10, 20) FROM dual;
+```
+Output
+
+```
+10
+```
+
+Example:
+
+```sql
+SELECT COALESCE(phone, mobile, 'No Contact')
+FROM employees;
+
+2. NVL
+
+Replaces NULL with another value.
+
+Syntax
+
+```sql
+NVL(column, replacement_value)
+```
+
+Example
+
+```sql
+SELECT NVL(commission, 0)
+FROM employees;
+```
+
+If commission is NULL → it returns 0.
+
+ 3. NVL2
+
+Returns one value if NOT NULL and another if NULL.
+
+Syntax
+
+```sql
+NVL2(column, value_if_not_null, value_if_null)
+Employees
+```
+| EMP_ID | NAME  | SALARY | COMMISSION |
+| ------ | ----- | ------ | ---------- |
+| 101    | Ravi  | 50000  | 5000       |
+| 102    | Meena | 45000  | NULL       |
+| 103    | Arjun | 60000  | 7000       |
+| 104    | Priya | 40000  | NULL       |
+
+Example
+SELECT NVL2(commission, 'Has Commission', 'No Commission')
+FROM employees;
+
+SELECT NAME,
+       COMMISSION,
+       NVL2(COMMISSION,'Has Commission','No Commission') AS COMM_STATUS
+FROM EMPLOYEES;
+output:
+| NAME  | COMMISSION | COMM_STATUS    |
+| ----- | ---------- | -------------- |
+| Ravi  | 5000       | Has Commission |
+| Meena | NULL       | No Commission  |
+| Arjun | 7000       | Has Commission |
+| Priya | NULL       | No Commission  |
+
+ 4. NANVL
+
+Used with floating numbers to replace NaN (Not a Number).
+
+Example
+
+```sql
+SELECT NANVL(0/0, 100) FROM dual;
+```
+Returns **100**
+Sales Data:
+| EMP_ID | EMP_NAME | SALES | TARGET |
+| ------ | -------- | ----- | ------ |
+| 101    | Ravi     | 10000 | 20000  |
+| 102    | Meena    | 5000  | 0      |
+| 103    | Arjun    | 15000 | 30000  |
+| 104    | Priya    | 0     | 0      |
+
+SELECT emp_name,
+       NANVL(sales/target,0) AS performance_ratio
+FROM sales_data;
+output:
+| EMP_NAME | PERFORMANCE_RATIO |
+| -------- | ----------------- |
+| Ravi     | 0.5               |
+| Meena    | 0                 |
+| Arjun    | 0.5               |
+| Priya    | 0                 |
+
+ 5. LNNVL
+
+Used in WHERE clause when condition contains NULL.
+
+Example
+
+```sql
+SELECT *
+FROM employees
+WHERE LNNVL(salary > 5000);
+Employees:
+| EMP_ID | NAME  | SALARY |
+| ------ | ----- | ------ |
+| 101    | Ravi  | 60000  |
+| 102    | Meena | 45000  |
+| 103    | Arjun | 70000  |
+| 104    | Priya | 40000  |
+| 105    | Kiran | NULL   |
+
+SELECT emp_id, name, salary
+FROM employees
+WHERE LNNVL(salary > 50000);
+| EMP_ID | NAME  | SALARY |
+| ------ | ----- | ------ |
+| 102    | Meena | 45000  |
+| 104    | Priya | 40000  |
+| 105    | Kiran | NULL   |
+
+Returns rows where condition is false or NULL.
+2. Numeric Functions
+1. ABS
+Returns absolute value.
+
+```sql
+SELECT ABS(-15) FROM dual;
+Output
+15
+
+2. CEIL
+Returns next highest integer.
+
+```sql
+SELECT CEIL(5.2) FROM dual;
+```
+Output
+
+```
+6
+
+3. FLOOR
+Returns largest integer less than or equal.
+
+```sql
+SELECT FLOOR(5.9) FROM dual;
+```
+
+Output
+
+```
+5
+```
+
+ 4. MOD
+Returns remainder.
+```sql
+SELECT MOD(10,3) FROM dual;
+Output
+
+```
+1
+
+5. POWER
+
+Returns number raised to power.
+
+```sql
+SELECT POWER(2,3) FROM dual;
+```
+
+Output
+8
+
+6. REMAINDER
+
+Another remainder function.
+
+```sql
+SELECT REMAINDER(10,3) FROM dual;
+```
+7. ROUND
+
+Rounds number.
+
+```sql
+SELECT ROUND(15.678,2) FROM dual;
+
+Output
+
+15.68
+8. SIGN
+
+Returns **-1, 0, or 1**
+
+SELECT SIGN(-10) FROM dual;
+
+Output
+-1
+ 9. TRUNC
+
+Removes decimal places.
+SELECT TRUNC(15.678,2) FROM dual;
+
+Output
+
+```
+15.67
+```
+ 3. Character Functions
+
+1. CHR
+
+Returns **character for ASCII code**.
+
+```sql
+SELECT CHR(65) FROM dual;
+```
+
+Output
+
+```
+A
+
+2. ASCII
+
+Returns ASCII value.
+
+```sql
+SELECT ASCII('A') FROM dual;
+
+Output
+
+```
+65
+
+3. CONCAT
+
+Combines two strings.
+
+```sql
+SELECT CONCAT('Hello','World') FROM dual;
+```
+
+Output
+
+```
+HelloWorld
+
+ 4. LOWER
+
+```sql
+SELECT LOWER('HELLO') FROM dual;
+```
+
+Output
+hello
+
+
+ 5. UPPER
+
+```sql
+SELECT UPPER('hello') FROM dual;
+```
+
+Output
+
+```
+HELLO
+
+6. INITCAP
+
+First letter capital.
+
+```sql
+SELECT INITCAP('oracle database') FROM dual;
+```
+
+Output
+
+```
+Oracle Database
+```
+ 7. LENGTH
+
+```sql
+SELECT LENGTH('ORACLE') FROM dual;
+```
+
+Output
+
+```
+6
+```
+
+ 8. SUBSTR
+
+Extract part of string.
+
+```sql
+SELECT SUBSTR('ORACLE',2,3) FROM dual;
+```
+
+Output
+
+```
+RAC
+```
+ 9. INSTR
+
+Find position of substring.
+
+```sql
+SELECT INSTR('ORACLE','A') FROM dual;
+```
+
+Output
+
+```
+3
+10. REPLACE
+
+```sql
+SELECT REPLACE('ORACLE','A','X') FROM dual;
+```
+
+Output
+
+```
+ORXCLE
+```
+
+---
+ 11. LPAD
+
+```sql
+SELECT LPAD('10',5,'0') FROM dual;
+```
+
+Output
+
+```
+00010
+```
+
+---
+ 12. RPAD
+
+```sql
+SELECT RPAD('10',5,'0') FROM dual;
+```
+
+Output
+
+```
+10000
+``` 13. LTRIM
+
+```sql
+SELECT LTRIM('   ORACLE') FROM dual;
+14. RTRIM
+
+```sql
+SELECT RTRIM('ORACLE   ') FROM dual;
+ 15. TRIM
+
+```sql
+SELECT TRIM('  ORACLE  ') FROM dual;
+```
+
+---
+
+# 4. Date and Time Functions
+ 1. SYSDATE
+
+Returns **current database date and time**.
+
+```sql
+SELECT SYSDATE FROM dual;
+```
+
+---
+
+ 2. CURRENT_DATE
+
+```sql
+SELECT CURRENT_DATE FROM dual;
+```
+
+---
+
+ 3. SYSTIMESTAMP
+
+```sql
+SELECT SYSTIMESTAMP FROM dual;
+```
+
+---
+
+4. CURRENT_TIMESTAMP
+
+```sql
+SELECT CURRENT_TIMESTAMP FROM dual;
+5. LOCALTIMESTAMP
+
+```sql
+SELECT LOCALTIMESTAMP FROM dual;
+
+6. ADD_MONTHS
+SELECT ADD_MONTHS(SYSDATE,2) FROM dual;
+Adds **2 months**.
+ 7. MONTHS_BETWEEN
+SELECT MONTHS_BETWEEN
+('01-JAN-2025','01-JAN-2024')
+FROM dual;
+Output
+
+12
+8. ROUND(Date)
+SELECT ROUND(SYSDATE) FROM dual;
+
+Rounds to nearest day.
+
+ 9. TRUNC(Date)
+SELECT TRUNC(SYSDATE) FROM dual;
+
+Removes time.
+ 10. TO_CHAR (Date Format)
+
+SELECT TO_CHAR(SYSDATE,'DD-MM-YYYY')
+FROM dual;
+
+Output
+
+```
+16-03-2026
+
+11. TO_TIMESTAMP
+
+```sql
+SELECT TO_TIMESTAMP
+('2025-12-25 10:30:00',
+'YYYY-MM-DD HH24:MI:SS')
+FROM dual;
+
+12. TO_TIMESTAMP_TZ
+
+Timestamp with timezone.
+
+ 13. SESSIONTIMEZONE
+SELECT SESSIONTIMEZONE FROM dual;
+
+
