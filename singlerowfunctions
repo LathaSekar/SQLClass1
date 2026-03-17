@@ -185,7 +185,6 @@ Output
 8
 
 6. REMAINDER
-
 Another remainder function.
 
 ```sql
@@ -194,23 +193,22 @@ SELECT REMAINDER(10,3) FROM dual;
 7. ROUND
 
 Rounds number.
-
 ```sql
 SELECT ROUND(15.678,2) FROM dual;
 
 Output
-
 15.68
+
 8. SIGN
 
-Returns **-1, 0, or 1**
+Returns -1, 0, or 1
 
 SELECT SIGN(-10) FROM dual;
 
 Output
 -1
- 9. TRUNC
 
+ 9. TRUNC
 Removes decimal places.
 SELECT TRUNC(15.678,2) FROM dual;
 
@@ -219,18 +217,15 @@ Output
 ```
 15.67
 ```
- 3. Character Functions
-
+3. Character Functions
 1. CHR
 
-Returns **character for ASCII code**.
+Returns character for ASCII code.
 
 ```sql
 SELECT CHR(65) FROM dual;
 ```
-
 Output
-
 ```
 A
 
@@ -247,13 +242,11 @@ Output
 65
 
 3. CONCAT
-
 Combines two strings.
 
 ```sql
 SELECT CONCAT('Hello','World') FROM dual;
 ```
-
 Output
 
 ```
@@ -264,77 +257,55 @@ HelloWorld
 ```sql
 SELECT LOWER('HELLO') FROM dual;
 ```
-
 Output
 hello
 
-
- 5. UPPER
+5. UPPER
 
 ```sql
 SELECT UPPER('hello') FROM dual;
 ```
-
 Output
-
-```
 HELLO
 
 6. INITCAP
-
 First letter capital.
 
 ```sql
 SELECT INITCAP('oracle database') FROM dual;
-```
 
 Output
-
-```
 Oracle Database
-```
+
  7. LENGTH
 
 ```sql
 SELECT LENGTH('ORACLE') FROM dual;
-```
 
 Output
-
-```
 6
-```
 
- 8. SUBSTR
-
+8. SUBSTR
 Extract part of string.
 
 ```sql
-SELECT SUBSTR('ORACLE',2,3) FROM dual;
+SELECT SUBSTR('Hello World',1,5) FROM dual;
 ```
-
 Output
+Hello
 
-```
-RAC
-```
- 9. INSTR
-
+9. INSTR
 Find position of substring.
-
 ```sql
 SELECT INSTR('ORACLE','A') FROM dual;
-```
 
 Output
-
-```
 3
+
 10. REPLACE
 
 ```sql
 SELECT REPLACE('ORACLE','A','X') FROM dual;
-```
 
 Output
 
@@ -344,11 +315,18 @@ ORXCLE
 
 ---
  11. LPAD
+ format employee IDs with leading zeros (common in reports, invoices).
+| emp_id |
+| ------ |
+| 101    |
+| 25     |
+
+SELECT emp_id, LPAD(emp_id, 5, '0') AS formatted_id
+FROM employees;
 
 ```sql
 SELECT LPAD('10',5,'0') FROM dual;
 ```
-
 Output
 
 ```
