@@ -1,0 +1,340 @@
+🔹 1. INSERT ALL (Multi-table Insert)
+
+Used to insert data into multiple tables in one query.
+✅ Example
+INSERT ALL
+  INTO emp_details (emp_id, name) VALUES (101, 'John')
+  INTO emp_salary (emp_id, salary) VALUES (101, 50000)
+SELECT * FROM dual;
+
+🔹 2. INSERT using Subquery
+Insert data from another table.
+✅ Example
+INSERT INTO emp_backup
+SELECT * FROM employees WHERE department_id = 10;
+
+🔹 3. Conditional INSERT (INSERT FIRST)
+Used when inserting based on conditions.
+INSERT FIRST
+  WHEN salary < 30000 THEN
+    INTO low_salary VALUES (emp_id, name, salary)
+  WHEN salary >= 30000 THEN
+    INTO high_salary VALUES (emp_id, name, salary)
+SELECT emp_id, name, salary FROM employees;
+| emp_id | name  | salary |
+| ------ | ----- | ------ |
+| 101    | Ravi  | 60000  |
+| 102    | Priya | 45000  |
+| 103    | John  | 25000  |
+INSERT FIRST
+    WHEN salary > 50000 THEN
+        INTO high_bonus VALUES (emp_id, name, salary)
+        
+    WHEN salary BETWEEN 30000 AND 50000 THEN
+        INTO medium_bonus VALUES (emp_id, name, salary)
+        
+    ELSE
+        INTO low_bonus VALUES (emp_id, name, salary)
+SELECT emp_id, name, salary FROM employees;
+Output:
+High bonus
+| emp_id | name | salary |
+| ------ | ---- | ------ |
+| 101    | Ravi | 60000  |
+medium bonus
+| emp_id | name | salary |
+| ------ | ---- | ------ |
+| 102    | priya | 45000  |
+low bonus
+| emp_id | name | salary |
+| ------ | ---- | ------ |
+| 103    | John | 25000  |
+
+
+🔹 4. Set Operators
+✅ UNION
+Removes duplicates
+SELECT name FROM emp1
+UNION
+SELECT name FROM emp2;
+✅ UNION ALL
+Keeps duplicates
+SELECT name FROM emp1
+UNION ALL
+SELECT name FROM emp2;
+✅ INTERSECT
+Common records
+SELECT name FROM emp1
+INTERSECT
+SELECT name FROM emp2;
+✅ MINUS
+Records in first but not second
+SELECT name FROM emp1
+MINUS
+SELECT name FROM emp2;
+
+Hierarchical Data Retrieval, Nth row:
+1. CONNECT BY, PRIOR, LEVEL (Hierarchical Query)
+Used to retrieve hierarchical data (like manager → employee).
+Employees:
+| emp_id | name     | manager_id |
+| ------ | -------- | ---------- |
+| 1      | CEO      | NULL       |
+| 2      | Manager1 | 1          |
+| 3      | Manager2 | 1          |
+| 4      | Emp1     | 2          |
+| 5      | Emp2     | 2          |
+| 6      | Emp3     | 3          |
+SELECT emp_id, name, manager_id
+FROM employees
+START WITH manager_id IS NULL
+CONNECT BY PRIOR emp_id = manager_id;
+Parent emp_id = Child manager_id
+| emp_id | name     | manager_id |
+| ------ | -------- | ---------- |
+| 1      | CEO      | NULL       |
+| 2      | Manager1 | 1          |
+| 4      | Emp1     | 2          |
+| 5      | Emp2     | 2          |
+| 3      | Manager2 | 1          |
+| 6      | Emp3     | 3          |
+
+SELECT emp_id, name, LEVEL
+FROM employees
+START WITH manager_id IS NULL
+CONNECT BY PRIOR emp_id = manager_id;
+Output:
+| emp_id | name     | LEVEL |
+| ------ | -------- | ----- |
+| 1      | CEO      | 1     |
+| 2      | Manager1 | 2     |
+| 4      | Emp1     | 3     |
+| 5      | Emp2     | 3     |
+| 3      | Manager2 | 2     |
+| 6      | Emp3     | 3     |
+
+CONNECT BY LEVEL:
+SELECT LEVEL
+FROM dual
+CONNECT BY LEVEL <= 5;
+| LEVEL |
+| ----- |
+| 1     |
+| 2     |
+| 3     |
+| 4     |
+| 5     |
+CONNECT BY ROWNUM:
+SELECT 'EMP' || ROWNUM AS emp_code
+FROM dual
+CONNECT BY LEVEL <= 5;
+| emp_code |
+| -------- |
+| EMP1     |
+| EMP2     |
+| EMP3     |
+| EMP4     |
+| EMP5     |
+STARTS WITH:
+SELECT column_names
+FROM table_name
+START WITH condition
+CONNECT BY PRIOR parent_column = child_column;
+| id | category_name | parent_id |
+| -- | ------------- | --------- |
+| 1  | Electronics   | NULL      |
+| 2  | Mobile        | 1         |
+| 3  | Laptop        | 1         |
+| 4  | iPhone        | 2         |
+| 5  | Samsung       | 2         |
+SELECT category_name, LEVEL
+FROM categories
+START WITH parent_id IS NULL
+CONNECT BY PRIOR id = parent_id;
+Output:
+| category_name | LEVEL |
+| ------------- | ----- |
+| Electronics   | 1     |
+| Mobile        | 2     |
+| iPhone        | 3     |
+| Samsung       | 3     |
+| Laptop        | 2     |
+
+🔶 1. SIMPLE VIEW
+✅ Definition
+A view created from one table without:
+GROUP BY
+Functions
+Joins
+Supports DML operations (INSERT, UPDATE, DELETE)
+| emp_id | name  | salary | dept |
+| ------ | ----- | ------ | ---- |
+| 1      | Ravi  | 50000  | IT   |
+| 2      | Priya | 40000  | HR   |
+| 3      | John  | 45000  | IT   |
+CREATE VIEW emp_view AS
+SELECT emp_id, name, salary
+FROM employees;
+SELECT * FROM emp_view;
+| emp_id | name  | salary |
+| ------ | ----- | ------ |
+| 1      | Ravi  | 50000  |
+| 2      | Priya | 40000  |
+| 3      | John  | 45000  |
+INSERT INTO emp_view VALUES (4, 'Kiran', 35000);
+
+Complex View:
+Employees
+| emp_id | name  | dept_id | salary |
+| ------ | ----- | ------- | ------ |
+| 1      | Ravi  | 10      | 50000  |
+| 2      | Priya | 20      | 40000  |
+| 3      | John  | 10      | 45000  |
+Departments:
+| dept_id | dept_name |
+| ------- | --------- |
+| 10      | IT        |
+| 20      | HR        |
+CREATE VIEW emp_dept_view AS
+SELECT e.emp_id, e.name, d.dept_name, e.salary
+FROM employees e
+JOIN departments d
+ON e.dept_id = d.dept_id;
+Output:
+| emp_id | name  | dept_name | salary |
+| ------ | ----- | --------- | ------ |
+| 1      | Ravi  | IT        | 50000  |
+| 2      | Priya | HR        | 40000  |
+| 3      | John  | IT        | 45000  |
+WITH CHECK OPTION:
+Ensures that any INSERT or UPDATE through the view must satisfy the view condition
+| emp_id | name  | dept | salary |
+| ------ | ----- | ---- | ------ |
+| 1      | Ravi  | IT   | 50000  |
+| 2      | Priya | HR   | 40000  |
+| 3      | John  | IT   | 45000  |
+CREATE VIEW it_employees AS
+SELECT emp_id, name, dept, salary
+FROM employees
+WHERE dept = 'IT'
+WITH CHECK OPTION;
+SELECT * FROM it_employees;
+| emp_id | name | dept | salary |
+| ------ | ---- | ---- | ------ |
+| 1      | Ravi | IT   | 50000  |
+| 3      | John | IT   | 45000  |
+INSERT INTO it_employees VALUES (4, 'Kiran', 'IT', 35000);
+INSERT INTO it_employees VALUES (5, 'Anu', 'HR', 30000);
+WITH READ ONLY
+Makes the view completely non-updatable
+CREATE VIEW emp_readonly AS
+SELECT emp_id, name, salary
+FROM employees
+WITH READ ONLY;
+INLINE Views:
+An Inline View is a subquery inside the FROM clause
+It acts like a temporary table for that query only
+SELECT *
+FROM (SELECT ... FROM table_name) alias_name;
+| emp_id | name  | salary |
+| ------ | ----- | ------ |
+| 1      | Ravi  | 50000  |
+| 2      | Priya | 40000  |
+| 3      | John  | 60000  |
+SELECT *
+FROM (
+    SELECT emp_id, name, salary
+    FROM employees
+) emp
+WHERE salary > 45000;
+Output:
+| emp_id | name | salary |
+| ------ | ---- | ------ |
+| 1      | Ravi | 50000  |
+| 3      | John | 60000  |
+
+Materialised View:
+A Materialized View (MV) is a physical copy of data stored in the database
+Sales:
+| sale_id | product | amount |
+| ------- | ------- | ------ |
+| 1       | Laptop  | 50000  |
+| 2       | Mobile  | 20000  |
+| 3       | Laptop  | 60000  |
+CREATE MATERIALIZED VIEW sales_summary
+BUILD IMMEDIATE
+REFRESH COMPLETE
+ON DEMAND
+AS
+SELECT product, SUM(amount) AS total_sales
+FROM sales
+GROUP BY product;
+Output:
+| product | total_sales |
+| ------- | ----------- |
+| Laptop  | 110000      |
+| Mobile  | 20000       |
+SELECT * FROM sales_summary;
+EXEC DBMS_MVIEW.REFRESH('sales_summary');
+DROP MATERIALIZED VIEW sales_summary;
+COMPLETE REFRESH
+Deletes old data + reloads full data
+
+FAST REFRESH
+Only changes (incremental update)
+
+ON COMMIT
+REFRESH FAST ON COMMIT;
+Automatically refresh when base table changes
+
+Sequence creation:
+A Sequence is used to generate unique numbers automatically
+CREATE SEQUENCE emp_seq
+START WITH 1
+INCREMENT BY 1
+MAXVALUE 1000
+NOCYCLE;
+
+NEXTVAL:
+Get next number
+SELECT emp_seq.NEXTVAL FROM dual;
+Output:
+| NEXTVAL |
+| ------- |
+| 1       |
+| 2       |
+| 3       |
+INSERT INTO employees (emp_id, name)
+VALUES (emp_seq.NEXTVAL, 'Ravi');
+CURRVAL
+SELECT emp_seq.CURRVAL FROM dual;
+Returns last generated value
+
+ALTER SEQUENCE:
+ALTER SEQUENCE emp_seq
+INCREMENT BY 2;
+
+DROP SEQUENCE:
+DROP SEQUENCE emp_seq;
+CREATE TABLE orders (
+    order_id NUMBER,
+    product VARCHAR2(50),
+    amount NUMBER
+);
+CREATE SEQUENCE order_seq START WITH 1000;
+INSERT INTO orders VALUES (order_seq.NEXTVAL, 'Laptop', 50000);
+| order_id | product |
+| -------- | ------- |
+| 1000     | Laptop  |
+INSERT INTO orders (order_id, product, amount)
+VALUES (order_seq.NEXTVAL, 'Laptop', 50000);
+
+Synonym:
+A Synonym is an alias (shortcut name) for a database object
+private synonym:
+CREATE SYNONYM emp FOR hr.employees;
+SELECT * FROM hr.employees;
+PUBLIC Synonym:
+CREATE PUBLIC SYNONYM emp FOR hr.employees;
+select * from emp;
+GRANT SELECT ON hr.employees TO scott;
